@@ -4,7 +4,7 @@ An Android app and home-screen widget for climbing at **El Salto, Nuevo León**.
 question: which walls are dry, and which will be in the sun or shade?
 
 **[⬇ Download ElSalto.apk](https://github.com/bucho2398/elsalto-app/raw/download/ElSalto.apk)** —
-official build 1.0.13, 2026-10-12.
+official build 1.0.14, 2026-10-12.
 
 Free software under the [GPL-3.0](LICENSE). This repository is the home of the app: forks are
 welcome, and changes come back here through pull requests.
