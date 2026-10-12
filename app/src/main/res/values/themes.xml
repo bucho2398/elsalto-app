@@ -1,0 +1,7 @@
+<resources>
+    <style name="Theme.ElSalto" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#FF15171C</item>
+        <item name="android:statusBarColor">#FF15171C</item>
+        <item name="android:navigationBarColor">#FF15171C</item>
+    </style>
+</resources>

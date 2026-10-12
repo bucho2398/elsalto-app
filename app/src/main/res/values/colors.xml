@@ -1,0 +1,11 @@
+<resources>
+    <color name="bg">#FF15171C</color>
+    <color name="surface">#FF1E2128</color>
+    <color name="fg">#FFE6E8EE</color>
+    <color name="muted">#FF8A90A0</color>
+    <color name="accent">#FF7FD8A6</color>
+    <color name="dry">#FF7FD8A6</color>
+    <color name="damp">#FFE8C468</color>
+    <color name="wet">#FFE8806A</color>
+    <color name="icon_bg">#FF1F3B4D</color>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <!-- app_name and widget_name come from app/build.gradle.kts -->
+    <string name="widget_description">Weather and how dry your favourite walls are</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A limestone wall in the canyon with a raindrop and the sun: dry or wet? -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFE8C468" android:pathData="M72,34m-9,0a9,9 0,1 1,18 0a9,9 0,1 1,-18 0" />
+    <path android:fillColor="#FFD9CBB0" android:pathData="M24,80 L40,38 L50,52 L60,30 L84,80 Z" />
+    <path android:fillColor="#FFB8A988" android:pathData="M60,30 L66,80 L84,80 Z" />
+    <path android:fillColor="#FF7EC8F0" android:pathData="M38,58 C38,58 31,67 31,71 A7,7 0 0,0 45,71 C45,67 38,58 38,58 Z" />
+</vector>
