@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest something new or better.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would it help with?
+      description: The problem or situation at the crag, not just the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: How could the app do it? Sketches or screenshots welcome.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Before you send it
+      options:
+        - label: It's not a wall or route correction (those go to elsalto-data).
+          required: true
+        - label: It doesn't need scraping theCrag or other sites, trackers, ads or analytics.
+          required: true

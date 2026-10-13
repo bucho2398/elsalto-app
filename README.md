@@ -4,7 +4,7 @@ An Android app and home-screen widget for climbing at **El Salto, Nuevo León**.
 question: which walls are dry, and which will be in the sun or shade?
 
 **[⬇ Download ElSalto.apk](https://github.com/bucho2398/elsalto-app/raw/download/ElSalto.apk)** —
-official build 1.0.16, 2026-10-13.
+official build 1.0.17, 2026-10-13.
 
 **FOSS: free and open-source software under the [MIT license](LICENSE).** Use, study, change and
 share it freely. This repository is the home of the app: forks are
@@ -90,7 +90,9 @@ is how full it is. It keeps a film of 35 % of that: the rest runs down the face,
 
 ## Forks and contributions
 
-- Pull requests and issues are welcome here. See [CONTRIBUTING.md](CONTRIBUTING.md).
+- Pull requests and issues are welcome here. See [CONTRIBUTING.md](CONTRIBUTING.md), and please
+  follow the [Code of Conduct](CODE_OF_CONDUCT.md). Help: [SUPPORT.md](SUPPORT.md); security
+  problems: [SECURITY.md](SECURITY.md), privately.
 - If you publish your own APKs, give them your own application id and name (in
   `app/build.gradle.kts`) and your own signing key, so nobody mistakes them for the official app.
 - Wall data: send corrections to [elsalto-data](https://github.com/bucho2398/elsalto-data). A fork can

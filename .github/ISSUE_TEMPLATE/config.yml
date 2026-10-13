@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or idea
+    url: https://github.com/bucho2398/elsalto-app/discussions
+    about: Ask, share ideas or give feedback in Discussions.
+  - name: Wrong or missing wall or route
+    url: https://github.com/bucho2398/elsalto-data/issues
+    about: Wall and route data lives in elsalto-data. Report it there.
+  - name: Security problem
+    url: https://github.com/bucho2398/elsalto-app/security/advisories/new
+    about: Report vulnerabilities privately, not in a public issue.
