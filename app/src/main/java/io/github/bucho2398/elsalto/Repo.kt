@@ -2,9 +2,13 @@ package io.github.bucho2398.elsalto
 
 import android.content.Context
 
-/** Loads the weather (cached) and runs the model; shared by the app and the home-screen widget. */
+/**
+ * Brings the wall data up to date (checked every few hours, or now when [force]), loads the
+ * weather (cached) and runs the model; shared by the app and the home-screen widget.
+ */
 object Repo {
     fun conditions(ctx: Context, force: Boolean = false, offline: Boolean = false): Conditions? {
+        if (!offline) runCatching { CragStore.update(ctx, force) }
         val crag = CragStore.load(ctx)
         val prefs = Prefs(ctx)
         val located = crag.walls.filter { it.lat != null && it.lon != null }

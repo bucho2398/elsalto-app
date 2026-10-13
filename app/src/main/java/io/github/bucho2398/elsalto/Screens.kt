@@ -221,23 +221,19 @@ private fun ConditionsTab(c: Conditions, openUrl: (String) -> Unit) {
         item { HorizontalDivider(color = Palette.muted.copy(alpha = 0.25f)) }
         item {
             Small(
-                "Sun on each wall comes from its GPS point on theCrag, SRTM terrain elevation (a 360° horizon out to 8 km) and the sun's " +
+                "Sun on each wall comes from its GPS point, SRTM terrain elevation (a 360° horizon out to 8 km) and the sun's " +
                     "position (suncalc: Meeus, with refraction), so ridges and the canyon's other side cast their shadows. Rock wetness is an estimate per wall, hour by hour, " +
                     "with the weather at that wall's spot and elevation: rain reaches a face from above (slabs), blown onto it by the wind " +
                     "(ISO 15927-3, by wind direction against the face and how sheltered the canyon is upwind) and as runoff from the slope " +
-                    "above; overhangs, roofs and caves catch little (theCrag's tags). Fog wets exposed faces. Water dries off hour by hour by " +
+                    "above; overhangs, roofs and caves catch little (the walls' tags). Fog wets exposed faces. Water dries off hour by hour by " +
                     "Penman's equation with the FAO-56 terms Open-Meteo uses: the light the face absorbs (direct sun at its angle while it " +
                     "reaches the face, sky light the terrain lets in, light off the slopes), heat lost to the sky, the air's dryness at the " +
                     "wall's elevation and the wind reaching it; under a clear night sky it turns into dew. " +
                     "The % is how full of water the face is; above a thin film, water runs down the face within an hour or two. A time after " +
-                    "\"dry\" is the first time it should be dry, even if it gets wet again later. Weather: Open-Meteo. Walls, routes and tags: theCrag.",
+                    "\"dry\" is the first time it should be dry, even if it gets wet again later. Weather: Open-Meteo.",
             )
         }
-        item {
-            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                TextButton(onClick = { openUrl("https://www.thecrag.com/en/climbing/mexico/el-salto") }) { Text("theCrag ↗") }
-            }
-        }
+        item { DataCredit(c.crag, c.offset, openUrl) }
     }
 }
 
@@ -276,6 +272,9 @@ private fun WallsTab(c: Conditions, vm: MainVm, openUrl: (String) -> Unit) {
                 c.walls.map { it.wall.zone }.distinct().forEach { z -> Chip(z, zone == z) { zone = z } }
             }
         }
+        if (c.walls.isEmpty()) item {
+            Small("No wall data on this phone yet. It downloads with the next refresh when you're online.", Palette.fg)
+        }
         item { RouteLogFiles(vm) }
         item { Small("★ pins a wall to the widget. Tap a wall for why it's wet or dry, its terrain horizon, sun through the year, aspect, shade windows and routes. The % is how full of water the face is: 0 % fully dry, 100 % soaking wet.") }
         items(shown, key = { it.wall.id }) { w ->
@@ -293,7 +292,11 @@ private fun WallsTab(c: Conditions, vm: MainVm, openUrl: (String) -> Unit) {
                             modifier = Modifier.clickable { vm.toggleFav(w.wall.id) }.padding(end = 10.dp))
                         Column(Modifier.weight(1f)) {
                             WallRow(w, c.offset)
-                            Small(w.wall.zone)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Small(w.wall.zone, Palette.muted)
+                                Spacer(Modifier.weight(1f))
+                                TheCragLink(w.wall, openUrl)
+                            }
                         }
                     }
                     Small(
@@ -338,14 +341,14 @@ private fun WallDetail(
         "Now here: ${Fmt.num(w.tempHere)}° and ${w.rhHere.roundToInt()}% humidity at ${w.terrain?.elev?.roundToInt() ?: "?"} m · " +
             "wind reaching the face ${w.windExpo}% · face sees ${w.sky}% of the sky" +
             (if (w.seeping) " · tufas and cracks likely seeping" else "") +
-            (if (w.crTags.isNotEmpty()) " · theCrag: " + w.crTags.joinToString(", ") else ""),
+            (if (w.crTags.isNotEmpty()) " · tags: " + w.crTags.joinToString(", ") else ""),
     )
     val src = when (w.aspectSource) {
         "yours" -> "set by you"
-        "theCrag" -> "from theCrag"
+        "theCrag" -> "from the wall data"
         "terrain" -> "estimated from the terrain slope, ${w.terrain?.facing?.roundToInt()}°"
-        "sun tag" -> "from theCrag's sun tag"
-        else -> "theCrag has none and the terrain is too flat here to tell"
+        "sun tag" -> "from its sun tag"
+        else -> "the wall data has none and the terrain is too flat here to tell"
     }
     // The charts and the aspect and shade editors fold away; what they say stays in these two lines.
     var sunOpen by rememberSaveable(w.wall.id) { mutableStateOf(false) }
@@ -389,7 +392,7 @@ private fun WallDetail(
     }
     if (w.seeping) Small("Heavy rain recently: tufas and cracks may still seep.", Palette.damp)
     val routes = w.wall.routes
-    if (routes.isEmpty()) SectionTitle("routes: none listed on theCrag") else {
+    if (routes.isEmpty()) SectionTitle("routes: none listed") else {
         val logged = routes.map { vm.log[it.id] }
         SectionTitle("routes · ${logged.count { it.done }}/${routes.size} done")
         val byAscent = Ascent.entries.reversed().mapNotNull { a ->
@@ -402,8 +405,42 @@ private fun WallDetail(
     routes.take(150).forEach { r ->
         RouteItem(r, vm, openRoute == r.id) { openRoute = if (openRoute == r.id) "" else r.id }
     }
-    TextButton(onClick = { openUrl(w.wall.url) }) { Text("open on theCrag ↗") }
+    if (isTheCrag(w.wall.url)) {
+        TextButton(onClick = { openUrl(w.wall.url) }) { Text("${w.wall.name} on theCrag ↗") }
+    }
 }
+
+private fun isTheCrag(url: String) = url.startsWith("https://www.thecrag.com/")
+
+/**
+ * The link to a wall's page on theCrag, as text: there's no permission to use theCrag's logo, so
+ * this is the attribution theCrag's CC BY-NC-SA terms ask for, by name.
+ */
+@Composable
+private fun TheCragLink(wall: Wall, openUrl: (String) -> Unit) {
+    if (!isTheCrag(wall.url)) return
+    Text(
+        "theCrag ↗", color = Palette.accent, fontSize = 12.sp,
+        modifier = Modifier.clickable { openUrl(wall.url) }.padding(start = 8.dp, top = 4.dp, bottom = 4.dp),
+    )
+}
+
+/** Where the walls and routes come from, on what terms, and how fresh they are. */
+@Composable
+private fun DataCredit(crag: CragData, offset: Int, openUrl: (String) -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Small(
+            (crag.attribution ?: "Walls and routes: theCrag contributors, CC BY-NC-SA 3.0") +
+                if (crag.updated > 0) " · updated ${Fmt.time(crag.updated, offset, "d MMM yyyy").lowercase()}" else "",
+        )
+        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+            TextButton(onClick = { openUrl("https://www.thecrag.com/en/climbing/mexico/el-salto") }) { Text("theCrag ↗") }
+            TextButton(onClick = { openUrl(DATA_TERMS) }) { Text("data terms ↗") }
+        }
+    }
+}
+
+const val DATA_TERMS = "https://github.com/bucho2398/elsalto-data/blob/main/DATA.md"
 
 @Composable
 private fun RadarTab(vm: MainVm) {

@@ -34,7 +34,7 @@ data class RouteEntry(
 }
 
 /**
- * Your routes, keyed by theCrag route id (stable across the weekly data refresh). Kept on the phone:
+ * Your routes, keyed by route id (kept stable in the hand-maintained elsalto-data). Kept on the phone:
  * entries in shared preferences, photos as JPEGs in the app's files.
  */
 class RouteLog(private val ctx: Context) {

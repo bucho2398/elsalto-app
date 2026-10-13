@@ -4,10 +4,11 @@ An Android app and home-screen widget for climbing at **El Salto, Nuevo León**.
 question: which walls are dry, and which will be in the sun or shade?
 
 **[⬇ Download ElSalto.apk](https://github.com/bucho2398/elsalto-app/raw/download/ElSalto.apk)** —
-official build 1.0.14, 2026-10-12.
+official build 1.0.15, 2026-10-13.
 
-Free software under the [GPL-3.0](LICENSE). This repository is the home of the app: forks are
-welcome, and changes come back here through pull requests.
+Free software under the [MIT license](LICENSE). This repository is the home of the app: forks are
+welcome, and changes come back here through pull requests. The wall and route data is kept apart,
+in [elsalto-data](https://github.com/bucho2398/elsalto-data), under its own terms.
 
 ## Install
 
@@ -23,8 +24,8 @@ build. Only the APK linked here is the official app, signed by its maintainer.
 
 - **Conditions:** rain over the last and next 72 hours, temperature, humidity, wind, sunrise and
   sunset, and a 7-day outlook ([Open-Meteo](https://open-meteo.com)).
-- **Walls:** every zone, wall and route at El Salto from [theCrag](https://www.thecrag.com/en/climbing/mexico/el-salto),
-  each wall with its estimated rock wetness (0 % dry to 100 % soaking) and why: the rain at its own
+- **Walls:** every zone, wall and route at El Salto, each with a link to its page on
+  [theCrag](https://www.thecrag.com/en/climbing/mexico/el-salto), and its estimated rock wetness (0 % dry to 100 % soaking) and why: the rain at its own
   spot, how much reached the face, runoff from the slope above, fog and dew, wind and sun.
 - **Sun and shade from the terrain:** each wall's GPS point plus SRTM elevation data gives a 360°
   horizon, so the app knows when ridges or the canyon's other side shade it: a sun bar for today, a
@@ -35,13 +36,16 @@ build. Only the APK linked here is the official app, signed by its maintainer.
 - **Your routes:** tick the routes you've done and how (sin top, top, X vuelos, encadenada), add
   notes and a photo; each wall counts how many of its routes you've done. All of this stays on your phone.
 
-Wall and route data comes with each new version. Wetness is an estimate: check the rock.
+Wall and route data updates by itself, without a new APK: the app checks for new data every few
+hours (or when you tap *refresh*) and keeps a copy for offline use. Wetness is an estimate: check the rock.
 
 ## Build it yourself
 
 You need JDK 17, the Android SDK (platform 34) and Gradle 8.9:
 
 ```sh
+tools/fixture.sh   # the walls and terrain the model test was made from (pinned)
+tools/seed.sh      # optional: the current data, bundled as the offline copy for first start
 gradle :app:testReleaseUnitTest :app:assembleDebug
 ```
 
@@ -59,8 +63,7 @@ or touching its data. Only the maintainer's release pipeline builds the official
 | Model: sun position, terrain shading, wetness | `app/src/main/java/.../Model.kt` |
 | Weather (Open-Meteo), radar (RainViewer, NASA GIBS, Esri) | `Weather.kt`, `Radar.kt` |
 | Screens, charts, widget, route log | `Screens.kt`, `Charts.kt`, `Widget.kt`, `Log.kt` |
-| Walls, routes and tags from theCrag | `data/crag.json` (snapshot, see [DATA.md](DATA.md)) |
-| Terrain: horizons, facing, catchments | `data/terrain.json`, made by `tools/terrain.py` (SRTM via AWS Terrain Tiles) |
+| Wall data: download, checksums, offline copy | `Data.kt` (`CragStore`), from [elsalto-data](https://github.com/bucho2398/elsalto-data) on GitHub Pages |
 | Model test | `ModelTest.kt` checks the Kotlin model against `app/src/test/resources/expected.json` |
 
 ### The wetness model, briefly
@@ -89,8 +92,9 @@ is how full it is. It keeps a film of 35 % of that: the rest runs down the face,
 - Pull requests and issues are welcome here. See [CONTRIBUTING.md](CONTRIBUTING.md).
 - If you publish your own APKs, give them your own application id and name (in
   `app/build.gradle.kts`) and your own signing key, so nobody mistakes them for the official app.
-- Please don't put theCrag scraping on a schedule: the data here is a snapshot, refreshed by hand
-  from time to time. See [DATA.md](DATA.md).
+- Wall data: send corrections to [elsalto-data](https://github.com/bucho2398/elsalto-data). A fork can
+  serve its own copy and build with `-PdataUrl=https://…/`. Nothing in this project scrapes theCrag;
+  please keep it that way.
 
 ## Feedback
 
@@ -104,7 +108,13 @@ I'll fix and push update ASAP.
 
 ## Licenses
 
-- Code: GPL-3.0, see [LICENSE](LICENSE).
+- Code: MIT, see [LICENSE](LICENSE).
 - Sun-position code ported from suncalc, © Volodymyr Agafonkin, BSD 2-Clause ([LICENSE-suncalc](LICENSE-suncalc)).
-- Data in `data/` is not covered by the GPL. See [DATA.md](DATA.md).
-- Weather from Open-Meteo (CC BY 4.0); radar and imagery from RainViewer, NASA GIBS and Esri at run time.
+- Walls, routes and terrain are not part of this repository or its license: they're downloaded from
+  [elsalto-data](https://github.com/bucho2398/elsalto-data), whose [DATA.md](https://github.com/bucho2398/elsalto-data/blob/main/DATA.md)
+  gives each file's source and terms. ⚠️ The walls and routes are theCrag-derived (CC BY-NC-SA) and
+  their redistribution permission isn't confirmed. Official APKs bundle a copy for offline use.
+- theCrag is linked by name: there's no permission to use its logo.
+- Weather from Open-Meteo (CC BY 4.0); radar and imagery from RainViewer, NASA GIBS and Esri, fetched
+  at run time under their own terms (not bundled).
+- Test fixtures in `app/src/test/resources` are Open-Meteo responses (CC BY 4.0).

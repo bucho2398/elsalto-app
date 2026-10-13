@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Make app/src/test/resources/expected.json with the reference model (the omalauncher widget's
-elsalto-conditions), from the site.json and walls.json fixtures, data/ and no preferences, at the
+elsalto-conditions), from the site.json and walls.json fixtures, the walls and terrain tools/fixture.sh
+downloads to build/fixture, and no preferences, at the
 fixtures' moment, plus each wall's wetness at LATER, after the fixture's forecast rain. ModelTest checks the app's Kotlin model against it.
 
+    tools/fixture.sh
     python3 tools/expected.py ~/.local/bin/elsalto-conditions > app/src/test/resources/expected.json
 """
 import contextlib, importlib.machinery, importlib.util, io, json, os, sys
@@ -17,10 +19,10 @@ spec = importlib.util.spec_from_loader("model", loader)
 m = importlib.util.module_from_spec(spec)
 loader.exec_module(m)
 
-m.CRAG = os.path.join(ROOT, "data/crag.json")
-m.TERRAIN = os.path.join(ROOT, "data/terrain.json")
+m.CRAG = os.path.join(ROOT, "build/fixture/walls.json")
+m.TERRAIN = os.path.join(ROOT, "build/fixture/terrain.json")
 m.PREFS = "/nonexistent"
-m.recrawl = m.reterrain = lambda *a: None
+m.update_data = m.reterrain = lambda *a: None
 site = json.load(open(os.path.join(RES, "site.json")))
 points = json.load(open(os.path.join(RES, "walls.json")))
 m.weather = lambda *a: site

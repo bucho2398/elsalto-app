@@ -16,9 +16,19 @@ import kotlin.math.abs
 class ModelTest {
     private fun res(name: String) = javaClass.classLoader!!.getResource(name)!!.readText()
 
+    /**
+     * The walls and terrain expected.json was made from: elsalto-data at the commit pinned in
+     * tools/fixture.sh, which downloads them to build/fixture (they aren't kept in this repository).
+     */
+    private fun fixture(name: String): String {
+        val f = File(System.getenv("ELSALTO_FIXTURE") ?: "../build/fixture", name)
+        check(f.exists()) { "${f.path} is missing: run tools/fixture.sh first" }
+        return f.readText()
+    }
+
     @Test
     fun matchesReferenceModel() {
-        val crag = CragStore.parse(File("../data/crag.json").readText(), File("../data/terrain.json").readText())
+        val crag = CragStore.parse(fixture("walls.json"), fixture("terrain.json"))
         val site = WeatherStore.parseSite(res("site.json"))
         assertNotNull("site weather parses", site)
         val points = WeatherStore.parsePoints(res("walls.json"))!!

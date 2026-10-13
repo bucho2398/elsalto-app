@@ -25,6 +25,11 @@ jobs:
         with:
           gradle-version: "8.9"
 
+      # Walls and terrain come from bucho2398/elsalto-data: a pinned copy for the model test, and the
+      # published one as the APK's offline copy.
+      - name: Data
+        run: tools/fixture.sh && tools/seed.sh
+
       - name: Test and build
         env:
           BUILD_NUMBER: ${{ github.run_number }}

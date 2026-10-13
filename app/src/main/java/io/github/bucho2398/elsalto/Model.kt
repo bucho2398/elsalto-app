@@ -137,7 +137,7 @@ fun hm(h: Double): String {
     return if (m >= 1440) "24:00" else "%02d:%02d".format(m / 60 % 24, m % 60)
 }
 
-/** How a wall takes rain, wind and sky, from theCrag's tags and description. */
+/** How a wall takes rain, wind and sky, from its tags and features. */
 class Character(
     val tilt: Double, val kind: String, val cap: Double, val rain: Double, val wind: Double,
     val dries: Double, val seeps: Boolean, val sunTag: String?, val tags: List<String>,
@@ -242,6 +242,8 @@ class Conditions(
     val paths: Map<String, List<DoubleArray>>,
     val sunNow: DoubleArray,
     val walls: List<WallState>,
+    /** The wall data this was computed from: its version, date and attribution. */
+    val crag: CragData = CragData.EMPTY,
 ) {
     val current get() = site.current
     val fog get() = current.optInt("weather_code") in listOf(45, 48)
@@ -319,7 +321,7 @@ object Model {
                 val wind = mid(ws, i, 0.0) / 3.6
                 val wdir = v(wd, i, 0.0)
                 recent.addLast(r); if (recent.size > 6) recent.removeFirst()
-                // Wind at the wall: less when terrain rises upwind; theCrag's wind tags.
+                // Wind at the wall: less when terrain rises upwind; the wind tags.
                 val expo = max(0.15, min(1.0, 1 - face.hzAt(wdir) / 45)) * ch.wind
                 // Rain onto the face: from above (slabs), wind-driven (ISO 15927-3), runoff from the slope above.
                 var onface = 0.0
@@ -413,6 +415,7 @@ object Model {
             paths = mapOf("today" to path(dayStart), "jun" to path(jun), "dec" to path(dec)),
             sunNow = Sun.compute(now.toDouble(), SITE_LAT, SITE_LON),
             walls = walls,
+            crag = crag,
         )
     }
 }

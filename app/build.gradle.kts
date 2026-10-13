@@ -12,6 +12,10 @@ val buildNumber = (System.getenv("BUILD_NUMBER") ?: "1").toInt()
 // instead of fighting it for the same id. Forks that publish APKs should pick their own id.
 val official = System.getenv("ELSALTO_OFFICIAL") == "1"
 
+// Where the app fetches walls, routes and terrain (index.json and the files it lists). Forks can point
+// it at their own copy with -PdataUrl=https://…/ or ELSALTO_DATA_URL.
+val dataUrl = (findProperty("dataUrl") as String?) ?: System.getenv("ELSALTO_DATA_URL") ?: "https://bucho2398.github.io/elsalto-data/"
+
 android {
     namespace = "io.github.bucho2398.elsalto"
     compileSdk = 34
@@ -26,6 +30,7 @@ android {
             applicationIdSuffix = ".foss"
             versionNameSuffix = "-foss"
         }
+        buildConfigField("String", "DATA_URL", "\"${dataUrl.trimEnd('/')}/\"")
         resValue("string", "app_name", if (official) "El Salto" else "El Salto FOSS")
         resValue("string", "widget_name", if (official) "El Salto conditions" else "El Salto FOSS conditions")
     }
@@ -50,15 +55,16 @@ android {
         }
     }
 
-    // theCrag walls and terrain, refreshed by hand (see README).
-    sourceSets["main"].assets.srcDirs("../data")
+    // An offline copy of the published data for first start, if tools/seed.sh put one in seed/
+    // (CI does). The app keeps itself up to date from dataUrl after that; a build without it works too.
+    sourceSets["main"].assets.srcDirs("../seed")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
-    buildFeatures { compose = true }
+    buildFeatures { compose = true; buildConfig = true }
     testOptions { unitTests.isReturnDefaultValues = true }
 }
 
