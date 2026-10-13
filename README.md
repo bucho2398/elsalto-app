@@ -4,9 +4,10 @@ An Android app and home-screen widget for climbing at **El Salto, Nuevo León**.
 question: which walls are dry, and which will be in the sun or shade?
 
 **[⬇ Download ElSalto.apk](https://github.com/bucho2398/elsalto-app/raw/download/ElSalto.apk)** —
-official build 1.0.15, 2026-10-13.
+official build 1.0.16, 2026-10-13.
 
-Free software under the [MIT license](LICENSE). This repository is the home of the app: forks are
+**FOSS: free and open-source software under the [MIT license](LICENSE).** Use, study, change and
+share it freely. This repository is the home of the app: forks are
 welcome, and changes come back here through pull requests. The wall and route data is kept apart,
 in [elsalto-data](https://github.com/bucho2398/elsalto-data), under its own terms.
 
@@ -108,7 +109,7 @@ I'll fix and push update ASAP.
 
 ## Licenses
 
-- Code: MIT, see [LICENSE](LICENSE).
+- Code: FOSS under the MIT license, see [LICENSE](LICENSE).
 - Sun-position code ported from suncalc, © Volodymyr Agafonkin, BSD 2-Clause ([LICENSE-suncalc](LICENSE-suncalc)).
 - Walls, routes and terrain are not part of this repository or its license: they're downloaded from
   [elsalto-data](https://github.com/bucho2398/elsalto-data), whose [DATA.md](https://github.com/bucho2398/elsalto-data/blob/main/DATA.md)
